@@ -1,4 +1,1 @@
-"plugins": [
-    "syntax-class-properties",
-    "transform-class-properties"
- ]
+{}

@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   Container,
   Header,
@@ -35,6 +34,23 @@ const styles = StyleSheet.create({
     height: 45
   }
 });
+// https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+String.prototype.capitalize = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+const InputField = props => (
+  <Item stackedLabel>
+    <Label>{props.label}</Label>
+    <Input
+      keyboardType="numeric"
+      onSubmitEditing={e =>
+        eval('props.state.update' + props.name.capitalize() + '(parseFloat(e.nativeEvent.text))')
+      }
+      placeholder={eval('props.state.input.' + props.name + '.toString(10)') + props.unit}
+    />
+  </Item>
+);
 
 class InputScreen extends React.Component {
   static navigationOptions = {
@@ -61,38 +77,20 @@ class InputScreen extends React.Component {
         </Header>
         <Content>
           <Form>
-            <Item stackedLabel>
-              <Label>Initial Velocity</Label>
-              <Input
-                keyboardType="numeric"
-                onSubmitEditing={e => this.props.updateVelocity(parseFloat(e.nativeEvent.text))}
-                placeholder={this.props.input.velocity.toString(10) + ' m/s'}
-              />
-            </Item>
-            <Item stackedLabel>
-              <Label>Angle</Label>
-              <Input
-                keyboardType="numeric"
-                onSubmitEditing={e => this.props.updateAngle(parseFloat(e.nativeEvent.text))}
-                placeholder={this.props.input.angle.toString(10) + '°'}
-              />
-            </Item>
-            <Item stackedLabel>
-              <Label>Height</Label>
-              <Input
-                keyboardType="numeric"
-                onSubmitEditing={e => this.props.updateHeight(parseFloat(e.nativeEvent.text))}
-                placeholder={this.props.input.height.toString(10) + ' m'}
-              />
-            </Item>
-            <Item stackedLabel>
-              <Label>Gravitation</Label>
-              <Input
-                keyboardType="numeric"
-                onSubmitEditing={e => this.props.updateGravitation(parseFloat(e.nativeEvent.text))}
-                placeholder={this.props.input.gravitation.toString(10) + ' m/s²'}
-              />
-            </Item>
+            <InputField
+              name={'velocity'}
+              unit={' m/s'}
+              label={'Initial Velocity'}
+              state={this.props}
+            />
+            <InputField name={'angle'} unit={'°'} label={'Angle'} state={this.props} />
+            <InputField name={'height'} unit={' m'} label={'Height'} state={this.props} />
+            <InputField
+              name={'gravitation'}
+              unit={' m/s²'}
+              label={'Gravitation'}
+              state={this.props}
+            />
           </Form>
         </Content>
         <Footer style={styles.buttonContainer}>

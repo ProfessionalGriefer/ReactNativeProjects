@@ -1,5 +1,8 @@
 {
   "main": "node_modules/expo/AppEntry.js",
+  "name": "flight-path-package",
+  "version": "0.1.0",
+  "author": "Vincent Nahn",
   "scripts": {
     "lint": "eslint redux/ screens/ App.js --fix",
     "start": "expo start",
