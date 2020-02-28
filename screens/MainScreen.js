@@ -1,6 +1,7 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { StyleSheet, View, Text, Dimensions, platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { StyleSheet, View, Dimensions, platform } from 'react-native';
 import { Container, Content, Left, Right, Header, Body, Title } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Constants from 'expo-constants';
@@ -11,6 +12,10 @@ import { VictoryChart, VictoryLine, VictoryTheme, VictoryZoomContainer } from 'v
 const { width, height } = Dimensions.get('window');
 const headerHeight = platform === 'ios' ? 64 : 56;
 
+const Roboto = require('native-base/Fonts/Roboto.ttf');
+// eslint-disable-next-line camelcase
+const Roboto_medium = require('native-base/Fonts/Roboto_medium.ttf');
+
 const styles = StyleSheet.create({
   text: {
     fontWeight: 'bold'
@@ -18,14 +23,14 @@ const styles = StyleSheet.create({
   svgView: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: width,
+    width,
     height: height - headerHeight - Constants.statusBarHeight
   }
 });
 const toRadians = angle => {
   return angle * (Math.PI / 180);
 };
-const Chart = props => (
+const Chart = ({ domain, func }) => (
   <VictoryChart
     theme={VictoryTheme.material}
     style={{ parent: { height: '100%' } }}
@@ -40,70 +45,85 @@ const Chart = props => (
       height={5000}
       samples={100}
       size={5}
-      domain={props.domain}
-      y={data => (props.func(data.x) >= 0 ? props.func(data.x) : 0)}
+      domain={domain}
+      y={data => (func(data.x) >= 0 ? func(data.x) : 0)}
     />
   </VictoryChart>
 );
 
-class MainScreen extends React.Component {
-  static navigationOptions = {
-    drawerIcon: ({ tintColor }) => <Icon name="home" style={{ color: tintColor }} />
-  };
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true
-    };
-  }
+Chart.propTypes = {
+  domain: PropTypes.shape({
+    x: PropTypes.array.isRequired,
+    y: PropTypes.array.isRequired
+  }).isRequired,
+  func: PropTypes.func.isRequired
+};
 
-  async componentDidMount() {
-    await Font.loadAsync({
-      Roboto: require('native-base/Fonts/Roboto.ttf'),
-      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf')
-    });
-    this.setState({ loading: false });
-  }
+const drawerIcon = ({ tintColor }) => <Icon name="home" style={{ color: tintColor }} />;
+drawerIcon.propTypes = {
+  tintColor: PropTypes.string.isRequired
+};
+
+const MainScreen = props => {
+  MainScreen.navigationOptions = {
+    drawerIcon
+  };
+  const [loading, setLoading] = useState(true);
+  const { input } = useSelector(state => ({
+    ...state
+  }));
+  useEffect(() => {
+    async function loadFonts() {
+      await Font.loadAsync({
+        Roboto,
+        Roboto_medium
+      });
+      setLoading(false);
+    }
+    loadFonts();
+  }, []);
+
   // für Taschenrechner: -0.5 * (g / (v*v * cos(alpha)*cos(alpha) ) ) * x*x + tan(alpha) * x + h;
-  wurfParabel = (
+  const wurfParabel = (
     x,
-    v = this.props.input.velocity,
-    alpha = this.props.input.angle,
-    h = this.props.input.height,
-    g = this.props.input.gravitation
+    v = input.velocity,
+    alpha = input.angle,
+    h = input.height,
+    g = input.gravitation
   ) => {
     return (
-      -0.5 * (g / (v * v * Math.pow(Math.cos(toRadians(alpha)), 2))) * x * x +
+      -0.5 * (g / (v * v * Math.cos(toRadians(alpha)) ** 2)) * x * x +
       Math.tan(toRadians(alpha)) * x +
       h
     );
   };
 
-  render() {
-    if (this.state.loading) {
-      return <AppLoading />;
-    }
-    return (
-      <Container>
-        <View style={{ height: Constants.statusBarHeight }} />
-        <Header>
-          <Left>
-            <Icon name="menu" onPress={() => this.props.navigation.openDrawer()} />
-          </Left>
-          <Body>
-            <Title>Home</Title>
-          </Body>
-          <Right />
-        </Header>
-        <Content contentContainerStyle={[StyleSheet.absoluteFill, styles.svgView]}>
-          <Chart func={this.wurfParabel} domain={{ x: [0, 200], y: [0, 100] }} />
-        </Content>
-      </Container>
-    );
+  if (loading) {
+    return <AppLoading />;
   }
-}
+  return (
+    <Container>
+      <View style={{ height: Constants.statusBarHeight }} />
+      <Header>
+        <Left>
+          <Icon name="menu" onPress={() => props.navigation.openDrawer()} />
+        </Left>
+        <Body>
+          <Title>Home</Title>
+        </Body>
+        <Right />
+      </Header>
+      <Content contentContainerStyle={[StyleSheet.absoluteFill, styles.svgView]}>
+        <Chart func={wurfParabel} domain={{ x: [0, 200], y: [0, 100] }} />
+      </Content>
+    </Container>
+  );
+};
 
-const mapStateToProps = state => ({
-  input: state.input
-});
-export default connect(mapStateToProps, {})(MainScreen);
+MainScreen.propTypes = {
+  navigation: PropTypes.shape({
+    openDrawer: PropTypes.func.isRequired
+  }).isRequired
+};
+
+export default MainScreen;

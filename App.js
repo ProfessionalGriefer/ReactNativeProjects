@@ -64,12 +64,12 @@ const MainDrawer = createDrawerNavigator(
 const MainStackNavigator = createAppContainer(MainDrawer);
 
 // eslint-disable-next-line react/prefer-stateless-function
-export default class App extends React.Component {
-  render() {
-    return (
-      <Provider store={store}>
-        <MainStackNavigator />
-      </Provider>
-    );
-  }
-}
+const App = () => {
+  return (
+    <Provider store={store}>
+      <MainStackNavigator />
+    </Provider>
+  );
+};
+
+export default App;

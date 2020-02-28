@@ -35,6 +35,10 @@ Eslint + Prettier implementiert. Die App hat jetzt einen zweiten Screen: Input, 
 
 Mehr über React Hooks gelernt und JSX in den Screen Dateien überarbeitet, sodass Presentational und Container Components getrennt sind.
 
+## 28.02.2020
+
+Programm vom klassischen "class X extends React.component" zu React Hooks umgewandelt --> "const x = props => {}".
+
 ## Gleichungen
 
 ### Waagerechter Wurf:
