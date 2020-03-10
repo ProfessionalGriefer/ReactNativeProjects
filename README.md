@@ -39,6 +39,37 @@ Mehr über React Hooks gelernt und JSX in den Screen Dateien überarbeitet, soda
 
 Programm vom klassischen "class X extends React.component" zu React Hooks umgewandelt --> "const x = props => {}".
 
+## 01.03.2020
+
+Mehr Informationen über die Tsiolkovsky Raketengleichung gesammelt.
+
+## 02.03.2020
+
+Raketengleichung in den Graphen implementiert (zuerst Beschleunigung durch das Triebwerk, danach gewöhnliche Wurfparabel). Jedoch muss der Graph die Achsen automatisch skalieren.
+
+## 03.03.2020
+
+X und Y Achse passen sich automatisch je nach Hoch- und Nullpunkt an. Graphen der Rakete und der Ballistik (nachdem der Treibstoff verbraucht wurde) in zwei unterschiedlich farbige Graphen unterteilt.
+
+## 05.03.2020
+
+Alter Code
+```javascript
+sx = deltaV * Math.cos(alpha) * t2 + lastX;
+sy = deltaV * Math.sin(alpha) * t2 - 0.5 * g * t ** 2 + lastY;
+```
+
+Neuer Code
+```javascript
+angle = Math.atan(
+  (dataRocket[dataRocket.length - 1].y - dataRocket[dataRocket.length - 2].y) /
+    (dataRocket[dataRocket.length - 1].x - dataRocket[dataRocket.length - 2].x)
+);
+sx = deltaV * Math.cos(angle) * t2 + lastX;
+sy = deltaV * Math.sin(angle) * t2 - 0.5 * g * t2 ** 2 + lastY;
+```
+Diese zwei Änderungen (neue Zeitberechnung bei der Gravitation in sy und die Berechnung eines neuen Winkels) haben das Problem gelöst, woran ich viel zu lange gesessen habe. LOL.
+
 ## Gleichungen
 
 ### Waagerechter Wurf:
@@ -75,25 +106,49 @@ $$ F = ma = m * \frac{dv}{dt} = -V_{exhaust} * \frac{dm}{dt} $$
 $$ dV = -V_{exhaust} * \frac{dm}{m} $$
 
 $$ \int_{V_i}^{V_f} \, dV = -V_{ex} \int_{m_i}^{m_f} $$
-$$ \Delta V = -V_{ex}* ln(\frac{m_f}{m_i}) = v_{ex} * ln(\frac{m_i}{m_f}) $$
+$$ \Delta V = -V_{ex}* \ln{\frac{m_f}{m_i}} = v_{ex} * \ln{\frac{m_i}{m_f}} $$
 
 ### Ideal Rocket Equation
 
-$$ \Delta V = V_{ex} ln(\frac{m_i}{m_f}) $$
-$$ \frac{m_i}{m_f} = exp(\frac{\Delta V}{V_{ex}}) $$
-$$ m_{prop} = m_i - m_f = m_i [1-exp(\frac{-\Delta V}{V_{ex}})] $$
+$$ \Delta V = V_{ex} \ln{\frac{m_i}{m_f}} $$
+$$ \frac{m_i}{m_f} = \exp{\frac{\Delta V}{V_{ex}}} $$
+$$ m_{prop} = m_i - m_f = m_i [1 - \exp{\frac{-\Delta V}{V_{ex}}]} $$
 
-### Propellant Fraction
-
-$$ \frac{m_{pop}{m_i}} = 1 - exp(\frac{-\Delta V}{V_{ex}}) $$
+$$ \frac{m_{pop}}{m_i} = 1 - \exp{\frac{-\Delta V}{V_{ex}}} $$
 $$ V_{ex} = g_0 I_{sp} $$
 $$ I_{sp} = specific\, impulse $$
+
+## Klassische Raketengleichung
+
+$$ a(t) = v_{ex} * \frac{\dot{m}}{m_0 - \dot{m} * t} $$
+$$ v(t) = v_{ex} * \ln{\frac{m_0}{m_0 - \dot{m} * t}} $$
+$$ s(t) = v_{ex} * (t - [t - \frac{m_0}{\dot{m}}] * \ln{[1 - \frac{\dot{m}}{m_0} * t]}) $$
+
+## MIT trajectory equations (Ich bin skeptisch!)
+
+$$ h_{i+1} = h_i + (V_i) (t_{i+1} - t_i) $$
+$$ V_{i+1} = V_i + (-g - \frac{1}{2}\rho V_i|V_i|\frac{C_D A}{m_i} + \frac{V_i}{|V_i|}\frac{\dot{m}_{fuel}u_e}{m_i}) (t_{i+1} - t_i) $$
+$$ m_{i+1} = m_i + (-\dot{m}_{fuel}) (t_{i+1} - t_i) $$
 
 ## Quellen
 
 https://web.mit.edu/16.unified/www/FALL/systems/Lab_Notes/traj.pdf
+https://scholarcommons.usf.edu/cgi/viewcontent.cgi?article=4858&context=ujmm
 
-Link für die Wurfparabel auf Geogebra: https://www.geogebra.org/graphing/ryapxjsw
+Raketendistanz am Beispiel vom Videospiel Kerbal Space Program
+https://www.youtube.com/watch?v=zLitRxZMsSc
+
+Herleitung der Raketen Gleichung
+https://www.quora.com/How-do-you-derive-Tsiolkovskys-rocket-equation
+
+Raketen Gleichung zusammen in Abhängigkeit von t
+https://lexikon.astronomie.info/java/raketengleichung/function.html
+
+Link für die Wurfparabel auf Geogebra
+https://www.geogebra.org/graphing/ryapxjsw
 
 https://web.mit.edu/16.unified/www/SPRING/propulsion/notes/node103.html
 https://www.wikiwand.com/en/Tsiolkovsky_rocket_equation
+
+Benötigte Einheiten und Größen, abgebildet auf Google Docs
+https://docs.google.com/spreadsheets/d/1BDtNlsk82gipnMVdCVM7jO3fuhc_V_FAqcAUx1n3c7Q/edit?usp=sharing

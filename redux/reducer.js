@@ -4,15 +4,36 @@ import {
   UPDATE_VELOCITY,
   UPDATE_ANGLE,
   UPDATE_HEIGHT,
-  UPDATE_GRAVITATION,
-  RESET_INPUT
+  UPDATE_GRAVITY,
+  RESET_INPUT,
+  UPDATE_INITIALMASS,
+  UPDATE_FINALMASS,
+  UPDATE_EXHAUSTVELOCITY,
+  UPDATE_MASSFLOWRATE,
+  // UPDATE_DELTAV,
+  // UPDATE_SPECIFICIMPULSE,
+  UPDATE_DATA_ROCKET,
+  UPDATE_DATA_BALLISTIC,
+  UPDATE_MAXIMUM,
+  UPDATE_ROOT
 } from './actions';
 
 const initialInputState = {
-  velocity: 35,
-  angle: 45,
-  height: 5,
-  gravitation: 9.81
+  projectile: {
+    velocity: 35,
+    angle: 45,
+    height: 5,
+    gravity: 9.81
+  },
+  rocket: {
+    initialMass: 10,
+    finalMass: 4,
+    exhaustVelocity: 55,
+    massFlowRate: 4,
+
+    deltaV: 0
+    // specificImpulse: 0
+  }
 };
 
 const inputReducer = (state = initialInputState, action) => {
@@ -26,19 +47,65 @@ const inputReducer = (state = initialInputState, action) => {
     case UPDATE_HEIGHT:
       return { ...state, height: action.payload };
 
-    case UPDATE_GRAVITATION:
-      return { ...state, gravitation: action.payload };
+    case UPDATE_GRAVITY:
+      return { ...state, gravity: action.payload };
 
     case RESET_INPUT:
       return initialInputState;
+
+    case UPDATE_FINALMASS:
+      return { ...state, finalMass: action.payload };
+
+    case UPDATE_INITIALMASS:
+      return { ...state, initialMass: action.payload };
+
+    case UPDATE_EXHAUSTVELOCITY:
+      return { ...state, exhaustVelocity: action.payload };
+
+    case UPDATE_MASSFLOWRATE:
+      return { ...state, massFlowRate: action.payload };
+
+    // case UPDATE_DELTAV:
+    //   return { ...state, deltaV: action.payload };
+
+    // case UPDATE_SPECIFICIMPULSE:
+    //   return { ...state, specificImpulse: action.payload };
 
     default:
       return state;
   }
 };
 
+const initialInfoState = {
+  dataRocket: [
+    { x: 10, y: 2 },
+    { x: 20, y: 10 }
+  ],
+  dataBallistic: [
+    { x: 10, y: 2 },
+    { x: 20, y: 10 }
+  ],
+  maximum: { x: 10, y: 10 },
+  root: 23 // {x: 23, y: 0}
+};
+const infoReducer = (state = initialInfoState, action) => {
+  switch (action.type) {
+    case UPDATE_DATA_ROCKET:
+      return { ...state, dataRocket: action.payload };
+    case UPDATE_DATA_BALLISTIC:
+      return { ...state, dataBallistic: action.payload };
+    case UPDATE_MAXIMUM:
+      return { ...state, maximum: action.payload };
+    case UPDATE_ROOT:
+      return { ...state, root: action.payload };
+    default:
+      return state;
+  }
+};
+
 const reducer = combineReducers({
-  input: inputReducer
+  input: inputReducer,
+  info: infoReducer
 });
 
 export default reducer;
