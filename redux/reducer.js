@@ -15,28 +15,18 @@ import {
   UPDATE_DATA_ROCKET,
   UPDATE_DATA_BALLISTIC,
   UPDATE_MAXIMUM,
-  UPDATE_ROOT
+  UPDATE_ROOT,
+  TOGGLE_CHECK
 } from './actions';
 
-const initialInputState = {
-  projectile: {
-    velocity: 35,
-    angle: 45,
-    height: 5,
-    gravity: 9.81
-  },
-  rocket: {
-    initialMass: 10,
-    finalMass: 4,
-    exhaustVelocity: 55,
-    massFlowRate: 4,
-
-    deltaV: 0
-    // specificImpulse: 0
-  }
+const initialProjectileInputState = {
+  velocity: 35,
+  angle: 45,
+  height: 5,
+  gravity: 9.81
 };
 
-const inputReducer = (state = initialInputState, action) => {
+const inputProjectileReducer = (state = initialProjectileInputState, action) => {
   switch (action.type) {
     case UPDATE_VELOCITY:
       return { ...state, velocity: action.payload };
@@ -51,8 +41,24 @@ const inputReducer = (state = initialInputState, action) => {
       return { ...state, gravity: action.payload };
 
     case RESET_INPUT:
-      return initialInputState;
+      return initialProjectileInputState;
 
+    default:
+      return state;
+  }
+};
+const initialRocketInputState = {
+  initialMass: 10,
+  finalMass: 4,
+  exhaustVelocity: 55,
+  massFlowRate: 4,
+
+  deltaV: 0,
+  // specificImpulse: 0
+  checked: false
+};
+const inputRocketReducer = (state = initialRocketInputState, action) => {
+  switch (action.type) {
     case UPDATE_FINALMASS:
       return { ...state, finalMass: action.payload };
 
@@ -70,6 +76,12 @@ const inputReducer = (state = initialInputState, action) => {
 
     // case UPDATE_SPECIFICIMPULSE:
     //   return { ...state, specificImpulse: action.payload };
+
+    case TOGGLE_CHECK:
+      return { ...state, checked: !state.checked };
+
+    case RESET_INPUT:
+      return initialRocketInputState;
 
     default:
       return state;
@@ -104,7 +116,8 @@ const infoReducer = (state = initialInfoState, action) => {
 };
 
 const reducer = combineReducers({
-  input: inputReducer,
+  inputRocket: inputRocketReducer,
+  inputProjectile: inputProjectileReducer,
   info: infoReducer
 });
 

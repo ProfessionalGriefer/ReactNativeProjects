@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, Dimensions, platform } from 'react-native';
 import { Container, Content, Left, Right, Header, Body, Title } from 'native-base';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Constants from 'expo-constants';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
@@ -20,6 +20,7 @@ const Roboto = require('native-base/Fonts/Roboto.ttf');
 const Roboto_medium = require('native-base/Fonts/Roboto_medium.ttf');
 
 const styles = StyleSheet.create({
+  size: 30,
   text: {
     fontWeight: 'bold'
   },
@@ -71,7 +72,7 @@ Chart.propTypes = {
   dataBallistic: PropTypes.array.isRequired
 };
 
-const drawerIcon = ({ tintColor }) => <Icon name="home" style={{ color: tintColor }} />;
+const drawerIcon = ({ tintColor }) => <Icon size={30} name="md-home" color={tintColor} />;
 drawerIcon.propTypes = {
   tintColor: PropTypes.string.isRequired
 };
@@ -81,7 +82,7 @@ const MainScreen = props => {
     drawerIcon
   };
   const [loading, setLoading] = useState(true);
-  const { input } = useSelector(state => ({ ...state }));
+  const { inputRocket, inputProjectile } = useSelector(state => ({ ...state }));
   const { info } = useSelector(state => ({ ...state }));
   const dispatch = useDispatch();
 
@@ -96,13 +97,13 @@ const MainScreen = props => {
     loadFonts();
 
     const chartData = (
-      alpha = toRadians(input.projectile.angle),
-      h = input.projectile.height,
-      vex = input.rocket.exhaustVelocity,
-      m0 = input.rocket.initialMass,
-      m1 = input.rocket.finalMass,
-      mf = input.rocket.massFlowRate,
-      g = input.projectile.gravity
+      alpha = toRadians(inputProjectile.angle),
+      h = inputProjectile.height,
+      vex = inputRocket.exhaustVelocity,
+      m0 = inputRocket.initialMass,
+      m1 = inputRocket.finalMass,
+      mf = inputRocket.massFlowRate,
+      g = inputProjectile.gravity
     ) => {
       const burnTime = (m0 - m1) / mf;
       const deltaV = vex * Math.log(m0 / mf);
@@ -115,7 +116,7 @@ const MainScreen = props => {
       let lastY;
       let t2 = 0;
       let angle;
-      for (let t = 0; t <= sample; t += 0.1) {
+      for (let t = 0; t <= sample; t += 0.5) {
         if (t < burnTime) {
           sx = Math.cos(alpha) * vex * (t - (t - m0 / mf) * Math.log(1 - (mf * t) / m0));
           sy =
@@ -148,7 +149,7 @@ const MainScreen = props => {
       dispatch(updateRoot(root));
     };
     chartData();
-  }, [input]);
+  }, [inputRocket, inputProjectile]);
 
   if (loading) {
     return <AppLoading />;
@@ -158,7 +159,7 @@ const MainScreen = props => {
       <View style={{ height: Constants.statusBarHeight }} />
       <Header>
         <Left>
-          <Icon name="menu" onPress={() => props.navigation.openDrawer()} />
+          <Icon size={styles.size} name="md-menu" onPress={() => props.navigation.openDrawer()} />
         </Left>
         <Body>
           <Title>Home</Title>

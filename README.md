@@ -54,12 +54,14 @@ X und Y Achse passen sich automatisch je nach Hoch- und Nullpunkt an. Graphen de
 ## 05.03.2020
 
 Alter Code
+
 ```javascript
 sx = deltaV * Math.cos(alpha) * t2 + lastX;
 sy = deltaV * Math.sin(alpha) * t2 - 0.5 * g * t ** 2 + lastY;
 ```
 
 Neuer Code
+
 ```javascript
 angle = Math.atan(
   (dataRocket[dataRocket.length - 1].y - dataRocket[dataRocket.length - 2].y) /
@@ -68,6 +70,7 @@ angle = Math.atan(
 sx = deltaV * Math.cos(angle) * t2 + lastX;
 sy = deltaV * Math.sin(angle) * t2 - 0.5 * g * t2 ** 2 + lastY;
 ```
+
 Diese zwei Änderungen (neue Zeitberechnung bei der Gravitation in sy und die Berechnung eines neuen Winkels) haben das Problem gelöst, woran ich viel zu lange gesessen habe. LOL.
 
 ## Gleichungen
