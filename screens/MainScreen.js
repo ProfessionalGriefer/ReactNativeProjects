@@ -10,7 +10,13 @@ import * as Font from 'expo-font';
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryZoomContainer } from 'victory-native';
 import _ from 'lodash';
 
-import { updateMaximum, updateRoot, updateDataRocket, updateDataBallistic } from '../redux/actions';
+import {
+  updateMaximum,
+  updateMinimum,
+  updateTime,
+  updateDataVelocity,
+  updateDataHeight
+} from '../redux/actions';
 
 const { width, height } = Dimensions.get('window');
 const headerHeight = platform === 'ios' ? 64 : 56;
@@ -31,10 +37,7 @@ const styles = StyleSheet.create({
     height: height - headerHeight - Constants.statusBarHeight
   }
 });
-const toRadians = angle => {
-  return angle * (Math.PI / 180);
-};
-const Chart = ({ domain, zoomDomain, dataRocket, dataBallistic }) => (
+const Chart = ({ domain, zoomDomain, dataVelocity, dataHeight }) => (
   <VictoryChart
     theme={VictoryTheme.material}
     style={{ parent: { height: '100%' } }}
@@ -47,14 +50,14 @@ const Chart = ({ domain, zoomDomain, dataRocket, dataBallistic }) => (
         data: { stroke: 'red', strokeWidth: 4 } // #c43a31
       }}
       domain={domain}
-      data={dataRocket}
+      data={dataVelocity}
     />
     <VictoryLine
       style={{
         data: { stroke: 'green', strokeWidth: 4 } // #c43a31
       }}
       domain={domain}
-      data={dataBallistic}
+      data={dataHeight}
     />
   </VictoryChart>
 );
@@ -67,9 +70,7 @@ Chart.propTypes = {
   zoomDomain: PropTypes.shape({
     x: PropTypes.array.isRequired,
     y: PropTypes.array.isRequired
-  }).isRequired,
-  dataRocket: PropTypes.array.isRequired,
-  dataBallistic: PropTypes.array.isRequired
+  }).isRequired
 };
 
 const drawerIcon = ({ tintColor }) => <Icon size={30} name="md-home" color={tintColor} />;
@@ -97,7 +98,7 @@ const MainScreen = props => {
     loadFonts();
 
     const chartData = (
-      alpha = toRadians(inputProjectile.angle),
+      v = inputProjectile.velocity,
       h = inputProjectile.height,
       vex = inputRocket.exhaustVelocity,
       m0 = inputRocket.initialMass,
@@ -106,47 +107,52 @@ const MainScreen = props => {
       g = inputProjectile.gravity
     ) => {
       const burnTime = (m0 - m1) / mf;
-      const deltaV = vex * Math.log(m0 / mf);
-      const dataRocket = [];
-      const dataBallistic = [];
-      const sample = 200;
-      let sx;
-      let sy;
-      let lastX;
-      let lastY;
-      let t2 = 0;
-      let angle;
-      for (let t = 0; t <= sample; t += 0.5) {
-        if (t < burnTime) {
-          sx = Math.cos(alpha) * vex * (t - (t - m0 / mf) * Math.log(1 - (mf * t) / m0));
-          sy =
-            Math.sin(alpha) * vex * (t - (t - m0 / mf) * Math.log(1 - (mf * t) / m0)) -
-            0.5 * g * t ** 2 +
-            h;
-          lastX = sx;
-          lastY = sy;
-          dataRocket.push({ x: sx, y: sy });
-        } else {
-          angle = Math.atan(
-            (dataRocket[dataRocket.length - 1].y - dataRocket[dataRocket.length - 2].y) /
-              (dataRocket[dataRocket.length - 1].x - dataRocket[dataRocket.length - 2].x)
-          );
-          sx = deltaV * Math.cos(angle) * t2 + lastX;
-          sy = deltaV * Math.sin(angle) * t2 - 0.5 * g * t2 ** 2 + lastY;
-          sy = sy < 0 ? 0 : sy;
-          dataBallistic.push({ x: sx, y: sy });
-          t2 += 0.1;
+      const totalTime = burnTime + 720;
+      const dataVelocity = [];
+      const dataHeight = [];
+      let vt;
+      let st;
+      if (inputRocket.checked) {
+        for (let t = 0; t <= totalTime; t += 0.5) {
+          if (t <= burnTime) {
+            vt = vex * Math.log(m0 / (m0 - mf * t)) - g * t;
+            st =
+              (-(vex * (m0 - mf * t)) / mf) * Math.log(m0 / (m0 - mf * t)) +
+              vex * t -
+              0.5 * g * t ** 2;
+          } else {
+            vt = vex * Math.log(m0 / m1) - g * t;
+            st = (-(vex * m1) / mf) * Math.log(m0 / m1) + vex * t - 0.5 * g * t ** 2;
+            if (st < 0) {
+              break;
+            }
+          }
+          dataVelocity.push({ x: t, y: vt });
+          dataHeight.push({ x: t, y: st });
+        }
+      } else {
+        for (let t = 0; t <= totalTime; t += 0.2) {
+          vt = v - g * t;
+          st = h + v * t - 0.5 * g * t ** 2;
+          if (st < 0) {
+            break;
+          }
+          dataVelocity.push({ x: t, y: vt });
+          dataHeight.push({ x: t, y: st });
         }
       }
 
-      const max = _.maxBy(dataBallistic, _.iteratee('y'));
-      const maxIndex = dataBallistic.findIndex(element => element === max);
-      const root = _.minBy(dataBallistic.slice(maxIndex), _.iteratee('y'));
+      const maxHeight = _.maxBy(dataHeight, _.iteratee('y'));
+      const maxVelocity = _.maxBy(dataVelocity, _.iteratee('y'));
+      const max = maxHeight.y > maxVelocity.y ? maxHeight : maxVelocity;
+      const min = _.minBy(dataVelocity, _.iteratee('y')).y;
+      const time = _.maxBy(dataHeight, _.iteratee('x')).x;
 
-      dispatch(updateDataRocket(dataRocket));
-      dispatch(updateDataBallistic(dataBallistic));
+      dispatch(updateDataVelocity(dataVelocity));
+      dispatch(updateDataHeight(dataHeight));
       dispatch(updateMaximum(max));
-      dispatch(updateRoot(root));
+      dispatch(updateMinimum(min));
+      dispatch(updateTime(time));
     };
     chartData();
   }, [inputRocket, inputProjectile]);
@@ -168,10 +174,10 @@ const MainScreen = props => {
       </Header>
       <Content contentContainerStyle={[StyleSheet.absoluteFill, styles.svgView]}>
         <Chart
-          dataRocket={info.dataRocket}
-          dataBallistic={info.dataBallistic}
-          domain={{ x: [0, info.root.x + 10], y: [-10, info.maximum.y + 10] }}
-          zoomDomain={{ x: [0, info.maximum.y + 10], y: [-10, info.maximum.y + 10] }}
+          dataVelocity={info.dataVelocity}
+          dataHeight={info.dataHeight}
+          domain={{ x: [0, info.time], y: [info.minimum, info.maximum.y + 10] }}
+          zoomDomain={{ x: [0, info.time], y: [info.minimum, info.maximum.y + 10] }}
         />
       </Content>
     </Container>

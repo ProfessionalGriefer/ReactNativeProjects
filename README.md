@@ -25,7 +25,7 @@ Ausschließlich mit dem Visualisierungs Frameworks D3 beschäftigt und versucht 
 - [ ] Scrollen
 - [ ] Anzeigen von Kraftvektoren
 - [ ] etc.
-      Muss alles noch implementiert werden.
+      Das sind nützliche Features, die man in Betracht ziehen kann.
 
 ## 24.02.2020
 
@@ -73,7 +73,13 @@ sy = deltaV * Math.sin(angle) * t2 - 0.5 * g * t2 ** 2 + lastY;
 
 Diese zwei Änderungen (neue Zeitberechnung bei der Gravitation in sy und die Berechnung eines neuen Winkels) haben das Problem gelöst, woran ich viel zu lange gesessen habe. LOL.
 
+## 30. und 31.03.2020
+
+Facharbeit zu Ende geschrieben.
+
 ## Gleichungen
+
+Nicht alle davon werden genutzt.
 
 ### Waagerechter Wurf:
 
@@ -127,31 +133,22 @@ $$ a(t) = v_{ex} * \frac{\dot{m}}{m_0 - \dot{m} * t} $$
 $$ v(t) = v_{ex} * \ln{\frac{m_0}{m_0 - \dot{m} * t}} $$
 $$ s(t) = v_{ex} * (t - [t - \frac{m_0}{\dot{m}}] * \ln{[1 - \frac{\dot{m}}{m_0} * t]}) $$
 
-## MIT trajectory equations (Ich bin skeptisch!)
-
-$$ h_{i+1} = h_i + (V_i) (t_{i+1} - t_i) $$
-$$ V_{i+1} = V_i + (-g - \frac{1}{2}\rho V_i|V_i|\frac{C_D A}{m_i} + \frac{V_i}{|V_i|}\frac{\dot{m}_{fuel}u_e}{m_i}) (t_{i+1} - t_i) $$
-$$ m_{i+1} = m_i + (-\dot{m}_{fuel}) (t_{i+1} - t_i) $$
-
 ## Quellen
-
-https://web.mit.edu/16.unified/www/FALL/systems/Lab_Notes/traj.pdf
-https://scholarcommons.usf.edu/cgi/viewcontent.cgi?article=4858&context=ujmm
 
 Raketendistanz am Beispiel vom Videospiel Kerbal Space Program
 https://www.youtube.com/watch?v=zLitRxZMsSc
 
-Herleitung der Raketen Gleichung
-https://www.quora.com/How-do-you-derive-Tsiolkovskys-rocket-equation
-
-Raketen Gleichung zusammen in Abhängigkeit von t
+Raketen Formeln (a, v, s) zusammen in Abhängigkeit von t
 https://lexikon.astronomie.info/java/raketengleichung/function.html
 
-Link für die Wurfparabel auf Geogebra
+Beispiel Graph Wurfparabel auf Geogebra
 https://www.geogebra.org/graphing/ryapxjsw
 
-https://web.mit.edu/16.unified/www/SPRING/propulsion/notes/node103.html
+Wikipedia Eintrag zur Raketengleichung
 https://www.wikiwand.com/en/Tsiolkovsky_rocket_equation
 
 Benötigte Einheiten und Größen, abgebildet auf Google Docs
 https://docs.google.com/spreadsheets/d/1BDtNlsk82gipnMVdCVM7jO3fuhc_V_FAqcAUx1n3c7Q/edit?usp=sharing
+
+Physik Facharbeit - wahrscheinlich auf privat eingestellt
+https://docs.google.com/document/d/1DxnEDBO5YImbG9_u_r0hoq0O7OsNkwwZLy_ClEqMcZQ/edit#

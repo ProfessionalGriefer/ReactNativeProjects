@@ -24,7 +24,6 @@ import {
 import Constants from 'expo-constants';
 import {
   updateVelocity,
-  updateAngle,
   updateHeight,
   updateGravity,
   updateInitialMass,
@@ -33,8 +32,6 @@ import {
   updateMassFlowRate,
   resetInput,
   toggleCheck
-  // updateDeltaV,
-  // updateSpecificImpulse,
 } from '../redux/actions';
 
 const styles = StyleSheet.create({
@@ -53,10 +50,6 @@ const InputField = ({ name, inputProjectile, inputRocket, label, unit }) => {
     case 'velocity':
       action = text => dispatch(updateVelocity(parseFloat(text)));
       display = inputProjectile.velocity.toString(10);
-      break;
-    case 'angle':
-      action = text => dispatch(updateAngle(parseFloat(text)));
-      display = inputProjectile.angle.toString(10);
       break;
     case 'height':
       action = text => dispatch(updateHeight(parseFloat(text)));
@@ -82,14 +75,6 @@ const InputField = ({ name, inputProjectile, inputRocket, label, unit }) => {
       action = text => dispatch(updateMassFlowRate(parseFloat(text)));
       display = inputRocket.massFlowRate.toString(10);
       break;
-    // case 'deltaV':
-    //   action = text => dispatch(updateDeltaV(parseFloat(text)));
-    //   display = input.deltaV.toString(10);
-    //   break;
-    // case 'specificImpulse':
-    //   action = text => dispatch(updateSpecificImpulse(parseFloat(text)));
-    //   display = input.specificImpulse.toString(10);
-    //   break;
     default:
   }
   return (
@@ -108,7 +93,6 @@ InputField.propTypes = {
   name: PropTypes.string.isRequired,
   inputProjectile: PropTypes.shape({
     velocity: PropTypes.number,
-    angle: PropTypes.number,
     height: PropTypes.number,
     gravity: PropTypes.number
   }).isRequired,
@@ -117,8 +101,6 @@ InputField.propTypes = {
     finalMass: PropTypes.number,
     exhaustVelocity: PropTypes.number,
     massFlowRate: PropTypes.number
-    // deltaV: PropTypes.number,
-    // specificImpulse: PropTypes.number
   }).isRequired,
   label: PropTypes.string.isRequired,
   unit: PropTypes.string.isRequired
@@ -135,7 +117,6 @@ const InputScreen = props => {
   };
   const { inputProjectile, inputRocket } = useSelector(state => ({ ...state }));
   const dispatch = useDispatch();
-  // const toggle = () => dispatch(toggleCheck());
   return (
     <Container>
       <View style={{ height: Constants.statusBarHeight }} />
@@ -151,28 +132,24 @@ const InputScreen = props => {
       <Content>
         <Form>
           {!inputRocket.checked && (
-            <InputField
-              name="velocity"
-              unit=" m/s"
-              label="Initial Velocity"
-              inputRocket={inputRocket}
-              inputProjectile={inputProjectile}
-            />
+            <>
+              <InputField
+                name="velocity"
+                unit=" m/s"
+                label="Initial Velocity"
+                inputRocket={inputRocket}
+                inputProjectile={inputProjectile}
+              />
+
+              <InputField
+                name="height"
+                unit=" m"
+                label="Height"
+                inputRocket={inputRocket}
+                inputProjectile={inputProjectile}
+              />
+            </>
           )}
-          <InputField
-            name="angle"
-            unit="°"
-            label="Angle"
-            inputRocket={inputRocket}
-            inputProjectile={inputProjectile}
-          />
-          <InputField
-            name="height"
-            unit=" m"
-            label="Height"
-            inputRocket={inputRocket}
-            inputProjectile={inputProjectile}
-          />
           <InputField
             name="gravity"
             unit=" m/s²"
@@ -217,8 +194,6 @@ const InputScreen = props => {
                 inputRocket={inputRocket}
                 inputProjectile={inputProjectile}
               />
-              {/* <InputField name="deltaV" unit="" label="delta-V" input={input} />
-              <InputField name="specificImpulse" unit=" s" label="Specific Impulse" input={input} /> */}
             </View>
           )}
         </Form>

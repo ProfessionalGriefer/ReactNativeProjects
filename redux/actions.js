@@ -1,6 +1,5 @@
 // Action Types
 export const UPDATE_VELOCITY = 'UPDATE_VELOCITY';
-export const UPDATE_ANGLE = 'UPDATE_ANGLE';
 export const UPDATE_HEIGHT = 'UPDATE_HEIGHT';
 export const UPDATE_GRAVITY = 'UPDATE_GRAVITY';
 export const UPDATE_FINALMASS = 'UPDATE_FINALMASS';
@@ -9,20 +8,15 @@ export const UPDATE_EXHAUSTVELOCITY = 'UPDATE_EXHAUSTVELOCITY';
 export const UPDATE_MASSFLOWRATE = 'UPDATE_MASSFLOWRATE';
 export const RESET_INPUT = 'RESET_INPUT';
 export const TOGGLE_CHECK = 'TOGGLE_CHECK';
-// export const UPDATE_DELTAV = 'UPDATE_DELTAV';
-// export const UPDATE_SPECIFICIMPULSE = 'UPDATE_SPECIFICIMPULSE';
-export const UPDATE_DATA_ROCKET = 'UPDATE_DATA_ROCKET';
-export const UPDATE_DATA_BALLISTIC = 'UPDATE_DATA_BALLISTIC';
+export const UPDATE_DATA_VELOCITY = 'UPDATE_DATA_VELOCITY';
+export const UPDATE_DATA_HEIGHT = 'UPDATE_DATA_HEIGHT';
 export const UPDATE_MAXIMUM = 'UPDATE_MAXIMUM';
-export const UPDATE_ROOT = 'UPDATE_ROOT';
+export const UPDATE_MINIMUM = 'UPDATE_MINIMUM';
+export const UPDATE_TIME = 'UPDATE_TIME';
 
 // Action Creator
 export const updateVelocity = update => ({
   type: UPDATE_VELOCITY,
-  payload: update
-});
-export const updateAngle = update => ({
-  type: UPDATE_ANGLE,
   payload: update
 });
 export const updateHeight = update => ({
@@ -55,28 +49,23 @@ export const resetInput = () => ({
 export const toggleCheck = () => ({
   type: TOGGLE_CHECK
 });
-
-// export const updateDeltaV = update => ({
-//   type: UPDATE_DELTAV,
-//   payload: update
-// });
-// export const updateSpecificImpulse = update => ({
-//   type: UPDATE_SPECIFICIMPULSE,
-//   payload: update
-// });
-export const updateDataRocket = update => ({
-  type: UPDATE_DATA_ROCKET,
+export const updateDataVelocity = update => ({
+  type: UPDATE_DATA_VELOCITY,
   payload: update
 });
-export const updateDataBallistic = update => ({
-  type: UPDATE_DATA_BALLISTIC,
+export const updateDataHeight = update => ({
+  type: UPDATE_DATA_HEIGHT,
   payload: update
 });
 export const updateMaximum = update => ({
   type: UPDATE_MAXIMUM,
   payload: update
 });
-export const updateRoot = update => ({
-  type: UPDATE_ROOT,
+export const updateMinimum = update => ({
+  type: UPDATE_MINIMUM,
+  payload: update
+});
+export const updateTime = update => ({
+  type: UPDATE_TIME,
   payload: update
 });

@@ -13,12 +13,6 @@ import InputScreen from './screens/InputScreen';
 const icon = require('./assets/icon.png');
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   drawerIcon: {
     height: 120,
     width: 120,
@@ -30,7 +24,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 });
-
 const CustomDrawerComponent = props => (
   <SafeAreaView style={{ flex: 1 }}>
     <View style={{ height: Constants.statusBarHeight }} />
@@ -48,9 +41,6 @@ const MainDrawer = createDrawerNavigator(
   {
     Home: MainScreen,
     Input: InputScreen
-    // Share,
-    // Settings,
-    // Help
   },
   {
     initialRouteName: 'Home',
